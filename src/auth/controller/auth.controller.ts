@@ -1,7 +1,6 @@
 import {Body, Controller, ForbiddenException, Post} from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import {LoginRequest} from "../dto/loginRequest";
-import {log} from "util";
 import {User} from "../../users/entities/user.schema";
 
 @Controller('auth')

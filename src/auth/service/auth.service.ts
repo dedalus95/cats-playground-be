@@ -25,19 +25,19 @@ export class AuthService {
         const bcrypt = require('bcrypt');
 
         if (await bcrypt.compare(password, user.password)) {
-            const refreshToken = await this.createRefreshToken(user, values);
+            const refreshToken = await AuthService.createRefreshToken(user, values);
             this.refreshTokens.push(refreshToken);
             return {
                 user,
                 refreshToken,
-                accessToken: await this.createAccessToken(user)
+                accessToken: await AuthService.createAccessToken(user)
             };
         } else {
             return undefined;
         }
     }
 
-    private async createRefreshToken(user, values): Promise<string> {
+    private static async createRefreshToken(user, values): Promise<string> {
         const refreshToken = new RefreshToken({
             userId: user.id,
             userAgent: values.userAgent,
@@ -46,12 +46,7 @@ export class AuthService {
         return refreshToken.sign();
     }
 
-    private async createAccessToken(user: User) {
-        console.log({user});
-        return sign({sub: user._id}, process.env.ACCESS_SECRET, {expiresIn: '15m'});
-            // user._id,
-            // process.env.ACCESS_SECRET,
-            // {expiresIn: 60 * 60 * 24 * 7}
-        // );
+    private static async createAccessToken(user: User) {
+        return sign({sub: user._id}, process.env.ACCESS_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
     }
 }
