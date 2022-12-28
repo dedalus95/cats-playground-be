@@ -1,6 +1,4 @@
-import {Controller, Get, Param} from '@nestjs/common';
-import { AppService } from './app.service';
-import {Cat} from "./cats/schemas/cat.schema";
+import {Controller, Get} from '@nestjs/common';
 
 @Controller()
 export class AppController {

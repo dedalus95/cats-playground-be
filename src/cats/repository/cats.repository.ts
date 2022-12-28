@@ -13,9 +13,6 @@ export class CatsRepository {
     }
 
     async find(catFilterQuery: FilterQuery<Cat>): Promise<Cat[]> {
-        //WRITE SOME function
-        //not getting copilot
-
         return this.catDocumentModel.find(catFilterQuery);
     }
 

@@ -1,7 +1,8 @@
-import {Body, Controller, Get, Param, Post} from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors} from "@nestjs/common";
 import {CatsRepository} from "../repository/cats.repository";
 import {Cat} from "../schemas/cat.schema";
 import {CatsService} from "../service/cats.service";
+import {FileInterceptor} from "@nestjs/platform-express";
 
 @Controller('cats')
 export class CatsController {
@@ -11,14 +12,20 @@ export class CatsController {
     }
 
     @Get(':catName')
-    async getCat(@Param('catName') catName: string): Promise<Cat> {
+    async getCatByCatName(@Param('catName') catName: string): Promise<Cat> {
         return this.catsService.findByName(catName);
     }
 
+    @Get()
+    async getCats(): Promise<Cat[]> {
+        return this.catsRepository.find({});
+    }
+
     @Post()
-    async createCat(@Body() cat: Cat): Promise<Cat> {
-        console.log("createCat");
-        console.log(cat);
+    @UseInterceptors(FileInterceptor('file'))
+    async createCat(@Body() cat: Cat,
+                    @UploadedFile() file: Express.Multer.File): Promise<Cat> {
+        cat.image = file.buffer.toString('base64');
         return this.catsRepository.create(cat);
     }
 }
