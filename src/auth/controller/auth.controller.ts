@@ -12,7 +12,6 @@ export class AuthController {
       @Body() loginRequest: LoginRequest
   ): Promise<{user: User, refreshToken: string, accessToken: string} | undefined> {
     const res = await this.authService.login(loginRequest.email, loginRequest.password, loginRequest.values);
-
     if (res) {
       res.user.password = undefined;
       return res;
@@ -20,4 +19,23 @@ export class AuthController {
       throw new ForbiddenException('Invalid credentials');
     }
   }
+
+  @Post('refresh')
+    async refresh (
+        @Body() refreshToken: { refreshToken: string }
+    ): Promise<string | undefined> {
+        const res = await this.authService.refresh(refreshToken);
+        if (res) {
+            return res;
+        } else {
+            throw new ForbiddenException('Invalid credentials');
+        }
+    }
+
+    @Post('logout')
+    async logout (
+        @Body() refreshTokenRequest: { refreshToken: string }
+    ): Promise<void> {
+        await this.authService.logout(refreshTokenRequest);
+    }
 }

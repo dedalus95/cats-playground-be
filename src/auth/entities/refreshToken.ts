@@ -1,5 +1,6 @@
-import {Schema, SchemaFactory} from "@nestjs/mongoose";
+import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
 import {sign} from "jsonwebtoken";
+import {User} from "../../users/entities/user.schema";
 
 export type RefreshTokenDocument = RefreshToken & Document;
 
@@ -10,9 +11,13 @@ export class RefreshToken {
         Object.assign(this, init);
     }
 
-    id: string;
-    userId: string;
+    @Prop()
+    user: User;
+
+    @Prop()
     userAgent: string;
+
+    @Prop()
     ipAddress: string;
 
     sign(): string {

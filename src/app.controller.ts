@@ -7,7 +7,6 @@ export class AppController {
 
   @Get()
   async getCat(): Promise<string> {
-    console.log("getCat");
     return 'il micio'
   }
 }
