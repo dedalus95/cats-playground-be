@@ -1,4 +1,4 @@
-import {Body, Controller, ForbiddenException, Post} from '@nestjs/common';
+import {Body, Controller, Delete, ForbiddenException, Ip, Post, Req} from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import {LoginRequest} from "../dto/loginRequest";
 import {User} from "../../users/entities/user.schema";
@@ -9,9 +9,15 @@ export class AuthController {
 
   @Post('login')
   async login (
-      @Body() loginRequest: LoginRequest
+      @Body() loginRequest: LoginRequest,
+      @Req() req,
+      @Ip() ip: string
   ): Promise<{user: User, refreshToken: string, accessToken: string} | undefined> {
-    const res = await this.authService.login(loginRequest.email, loginRequest.password, loginRequest.values);
+      console.log({ip})
+    const res = await this.authService.login(loginRequest.email, loginRequest.password, {
+        userAgent: req.headers['user-agent'],
+        ipAddress: ip
+    });
     if (res) {
       res.user.password = undefined;
       return res;
@@ -32,7 +38,7 @@ export class AuthController {
         }
     }
 
-    @Post('logout')
+    @Delete('logout')
     async logout (
         @Body() refreshTokenRequest: { refreshToken: string }
     ): Promise<void> {

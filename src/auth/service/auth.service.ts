@@ -21,8 +21,8 @@ export class AuthService {
         if(!user) {
             throw new ForbiddenException('Invalid user');
         }
-        const accessToken = await AuthService.createAccessToken(user);
-        return sign({sub: accessToken}, process.env.ACCESS_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
+        await AuthService.createAccessToken(user);
+        return sign({sub: user}, process.env.ACCESS_SECRET, {expiresIn: '1h'});
     }
 
     private async retrieveRefreshToken(refreshToken: string): Promise<RefreshToken | undefined> {
@@ -71,7 +71,7 @@ export class AuthService {
     }
 
     private static async createAccessToken(user: User) {
-        return sign({sub: user._id}, process.env.ACCESS_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
+        return sign({sub: user}, process.env.ACCESS_SECRET, {expiresIn: '1h'});
     }
 
     async logout(refreshTokenRequest: { refreshToken: string }): Promise<void> {

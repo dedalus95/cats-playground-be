@@ -5,6 +5,7 @@ import { UsersModule } from '../users/users.module';
 import {RefreshTokenRepository} from "./repository/refreshToken.repository";
 import {RefreshToken, RefreshTokenSchema} from "./entities/refreshToken";
 import {MongooseModule} from "@nestjs/mongoose";
+import {JwtStrategy} from "./strategies/jwt.strategy";
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import {MongooseModule} from "@nestjs/mongoose";
       UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, RefreshTokenRepository]
+  providers: [AuthService, RefreshTokenRepository, JwtStrategy]
 })
 export class AuthModule {}
